@@ -15,7 +15,7 @@ spec:
       containers:
       - name: converter                  # Nom du conteneur dans le Pod
         image: excel-csv-converter:latest  # Image Docker utilisée pour lancer l’application
-        imagePullPolicy: Always         
+        imagePullPolicy: Never         
         ports:
         - containerPort: 8000            # Port exposé par le conteneur à l’intérieur du Pod
         resources:  
