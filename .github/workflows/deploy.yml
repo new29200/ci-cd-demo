@@ -37,23 +37,6 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v3
-
-    - name: Load kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
-        chmod 600 ~/.kube/config
-    
-    - run: echo ${{ github.repository_owner }}
-
-    - name: Update image in deployment
-      run: |
-        kubectl set image deployment/excel-csv-converter \
-          converter=ghcr.io/${{ github.repository_owner }}/excel-csv-converter:${{ github.sha }} \
-          --record
-
     - name: Deploy manifests
       run: kubectl apply -f k8s/
 
