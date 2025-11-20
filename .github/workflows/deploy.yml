@@ -20,7 +20,7 @@ jobs:
         git fetch origin
         git checkout prod 
         git merge origin/main
-        git push prod
+        git push origin prod
 
     - name: Login to GHCR
       uses: docker/login-action@v3
