@@ -14,7 +14,7 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: upddate branch password
+    - name: upddate branch prod
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -23,6 +23,26 @@ jobs:
         git checkout prod 
         git merge origin/main
         git push origin prod
+
+    - name: upddate branch dev
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        git fetch origin
+        git checkout dev
+        git merge origin/main
+        git push origin dev
+
+    - name: upddate branch test
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        git fetch origin
+        git checkout test 
+        git merge origin/main
+        git push origin test
 
     - name: Login to GHCR
       uses: docker/login-action@v3
