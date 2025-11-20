@@ -45,6 +45,8 @@ jobs:
         mkdir -p ~/.kube
         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
         chmod 600 ~/.kube/config
+    
+    - run: echo ${{ github.repository_owner }}
 
     - name: Update image in deployment
       run: |
