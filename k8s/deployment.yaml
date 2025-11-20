@@ -1,0 +1,20 @@
+apiVersion: apps/v1                      # Version de l'API utilisée pour gérer les Deployments
+kind: Deployment                         # Type de ressource : Deployment gère pods + mises à jour
+metadata:
+  name: excel-csv-converter              # Nom du Deployment dans Kubernetes
+spec:
+  replicas: 2                            # Nombre de pods à exécuter en parallèle
+  selector:
+    matchLabels:
+      app: excel-csv-converter           # Le Deployment gère uniquement les Pods ayant ce label
+  template:
+    metadata:
+      labels:
+        app: excel-csv-converter         # Labels appliqués aux pds créés par ce Deployment
+    spec:
+      containers:
+      - name: converter                  # Nom du conteneur dans le Pod
+        image: excel-csv-converter:latest  # Image Docker utilisée pour lancer l’application
+        imagePullPolicy: Always          # Kubernetes ne télécharge pas l’image (Minikube)
+        ports:
+        - containerPort: 8000            # Port exposé par le conteneur à l’intérieur du Pod

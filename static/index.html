@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur Excel/CSV</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Convertisseur Excel/CSV</h1>
+        
+        <!-- Excel to CSV Converter -->
+        <div class="converter">
+            <h2>Excel → CSV</h2>
+            <input type="file" id="excelFile" accept=".xlsx,.xls" class="file-input" />
+            <button onclick="convertExcelToCsv()" class="btn">Convertir en CSV</button>
+            <div id="excelStatus" class="status"></div>
+        </div>
+
+        <!-- CSV to Excel Converter -->
+        <div class="converter">
+            <h2>CSV → Excel</h2>
+            <input type="file" id="csvFile" accept=".csv" class="file-input" />
+            <button onclick="convertCsvToExcel()" class="btn">Convertir en Excel</button>
+            <div id="csvStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour convertir un fichier Excel en CSV
+        async function convertExcelToCsv() {
+            const fileInput = document.getElementById('excelFile'); // Récupère l'input fichier
+            const statusDiv = document.getElementById('excelStatus'); // Zone de statut
+            const file = fileInput.files[0]; // Premier fichier sélectionné
+
+            if (!file) { // Vérifie si un fichier a été choisi
+                showStatus(statusDiv, 'Veuillez sélectionner un fichier Excel', 'error');
+                return;
+            }
+
+            const formData = new FormData(); // Prépare les données à envoyer
+            formData.append('file', file); // Ajoute le fichier au formulaire
+
+            try {
+                showStatus(statusDiv, 'Conversion...', 'success'); // Message de progression
+                
+                // Envoie le fichier au backend FastAPI
+                const response = await fetch('/excel-to-csv', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) { // Si réponse HTTP = erreur
+                    throw new Error('Conversion échouée');
+                }
+
+                const blob = await response.blob(); // Récupère le CSV généré
+                const url = window.URL.createObjectURL(blob); // Crée un lien temporaire vers le fichier
+                const filename = file.name.replace(/\.[^/.]+$/, '') + '.csv'; // Change l'extension du nom
+
+                showStatus(statusDiv, 'Conversion réussie! ', 'success'); // Message de succès
+                addDownloadLink(statusDiv, url, filename); // Ajoute un lien de téléchargement
+            } catch (error) {
+                showStatus(statusDiv, 'Erreur: ' + error.message, 'error'); // Affiche erreur
+            }
+        }
+
+        // Fonction pour convertir un CSV en Excel
+        async function convertCsvToExcel() {
+            const fileInput = document.getElementById('csvFile'); // Récupère l'input fichier
+            const statusDiv = document.getElementById('csvStatus'); // Zone de statut
+            const file = fileInput.files[0]; // Premier fichier sélectionné
+
+            if (!file) { // Sécurité : aucun fichier choisi
+                showStatus(statusDiv, 'Veuillez sélectionner un fichier CSV', 'error');
+                return;
+            }
+
+            const formData = new FormData(); // Prépare les données POST
+            formData.append('file', file); // Ajoute le fichier CSV
+
+            try {
+                showStatus(statusDiv, 'Conversion...', 'success'); // Message de progression
+
+                // Envoie le fichier au backend FastAPI
+                const response = await fetch('/csv-to-excel', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) { // Vérifie si la réponse est OK
+                    throw new Error('Conversion échouée');
+                }
+
+                const blob = await response.blob(); // Fichier Excel renvoyé
+                const url = window.URL.createObjectURL(blob); // URL temporaire
+                const filename = file.name.replace(/\.[^/.]+$/, '') + '.xlsx'; // Nouveau nom
+
+                showStatus(statusDiv, 'Conversion réussie! ', 'success'); // Message OK
+                addDownloadLink(statusDiv, url, filename); // Ajout du lien de téléchargement
+            } catch (error) {
+                showStatus(statusDiv, 'Erreur: ' + error.message, 'error'); // Erreur affichée
+            }
+        }
+
+        // Fonction qui met à jour la zone de statut
+        function showStatus(element, message, type) {
+            element.className = 'status ' + type; // Change la classe CSS
+            element.innerHTML = message; // Affiche le message
+        }
+
+        // Fonction qui ajoute un lien de téléchargement sous le message
+        function addDownloadLink(element, url, filename) {
+            const link = document.createElement('a'); // Crée un <a>
+            link.href = url; // Associe l'URL du fichier
+            link.download = filename; // Nom du fichier téléchargé
+            link.className = 'download-link'; // Style CSS
+            link.textContent = 'Télécharger ' + filename; // Texte affiché
+            element.appendChild(link); // Ajoute le lien dans le bloc statut
+        }
+    </script>
+</body>
+</html>

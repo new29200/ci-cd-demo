@@ -1,0 +1,15 @@
+apiVersion: v1               # Version de l’API Kubernetes utilisée pour créer un Service
+kind: Service                # Type de ressource : on expose un pod
+metadata:
+  name: excel-csv-converter  # Nom du Service dans Kubernetes
+  labels:
+    app: excel-csv-converter # Label associé, utilisé pour identifier le service
+spec:
+  type: NodePort             # Type de service exposé via un port du node
+  selector:
+    app: excel-csv-converter # Sélecteur : associe ce service aux pods ayant ce label
+  ports:
+  - protocol: TCP            # Protocole réseau
+    port: 8000               # Port d’accès au service à l’intérieur du cluster
+    targetPort: 8000         # Port sur lequel l’application écoute dans le container
+    nodePort: 30080          # Port exposé pour accéder 

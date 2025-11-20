@@ -1,0 +1,16 @@
+services:
+  app:
+    # Construit l’image Docker à partir du Dockerfile dans le dossier courant
+    build: .
+
+    # accéder à l’application via http://localhost:8000
+    ports:
+      - "8000:8000"
+
+    # Redémarre automatiquement le conteneur sauf si arret manuel
+    # Options possibles : no / on-failure / always / unless-stopped
+    restart: unless-stopped
+
+    # Variables d’environnement passées au conteneur
+    environment:
+      - PYTHONUNBUFFERED=1
