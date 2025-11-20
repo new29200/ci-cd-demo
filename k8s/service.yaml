@@ -12,4 +12,4 @@ spec:
   - protocol: TCP            # Protocole réseau
     port: 8000               # Port d’accès au service à l’intérieur du cluster
     targetPort: 8000         # Port sur lequel l’application écoute dans le container
-    nodePort: 30080          # Port exposé pour accéder 
+    nodePort: 0          # Port exposé pour accéder 
